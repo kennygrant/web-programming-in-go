@@ -39,41 +39,71 @@ You can then open your web browser at port 3000, and find your web server talkin
 
 ### Listen and Serve with TLS
 
-One oversight in the standard library defaults, which cannot now be changed because of the Go 1 guarantee, is that timeouts are not set by default. You can read more about this [here](https://blog.cloudflare.com/exposing-go-on-the-internet/). So in a slight addition to our code above, we're going to use a new method ListenAndServeTLS to serve using a certificate. We'll need to generate a self-signed cert first. If you have openssl available you can use that:
+Serving a website with TLS over https is a simple matter of calling a different function - ListenAndServeTLS to serve using a certificate and key which we provide the path for. We'll need to generate a self-signed cert first. If you have openssl available you can use that. First cd to the directory including your server code, then execute this line and press return for any questions:
 
 ```bash
 openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes
 ```
 
-Now that you have the key.pem and cert.pem files in the same directory as serve.go, replace the line creating the server with this:
+Now that you have the key.pem and cert.pem files in the same directory as serve.go, replace the line creating the server with this and try launching it again:
 
 ```go
-// Set up a new http server with some default timeouts and our desired 
-server := &http.Server{
-        // Set the port in the preferred string format
-    Addr: ":3000",
-}
-
 // Ask the http package to listen with TLS
-err := http.ListenAndServeTLS("cert.pem", "key.pem")
+err := http.ListenAndServeTLS(":3000", "cert.pem", "key.pem", nil)
 if err != nil {
    log.Fatal(err)
 }
 ```
 
-As a nice bonus, Go supports HTTP/2 - HTTP/2 is enabled automatically if you use TLS and the client supports it.
+You will then be able to connect to [localhost](https://localhost:3000/tls) using https, though you will have to ignore a warning about your self-signed certificate, which browsers treat as less secure than no certificate at all, this will let you check that your server is using tls though. As a nice bonus, Go supports HTTP/2 - HTTP/2 is enabled automatically if you use TLS and the client supports it.
 
-## Free and Automatic Let's Encrypt certificates
+One oversight in the standard library defaults, which cannot now be changed because of the Go 1 guarantee, is that timeouts are not set by default on the server. You can read more about this [here](https://blog.cloudflare.com/exposing-go-on-the-internet/). So in a slight addition to our code above, we're going to set timeouts on the server. We can then call a method on the server to start it, rather than setting using the default server with the package level function above. 
 
-The Autocert library allows you to automatically request TLS certs for your domains and serve your website with TLS without having to deal with a certificate authority.
+```go
+// Set up a new http server with some default timeouts and port
+server := &http.Server{
+  // Set the port in the preferred string format
+  Addr: ":3000",
+  // The default server from net/http has no timeouts
+  // Set some reasonable timeouts here
+  ReadTimeout:  30 * time.Second,
+  WriteTimeout: 60 * time.Second,
+}
 
-```
-// Ask the http package to listen on port 3000
-err := http.ListenAndServe(":3000", nil)
+// Start the server with our self-signed cert and key
+err := server.ListenAndServeTLS("cert.pem", "key.pem")
 if err != nil {
-log.Fatal(err)
+  log.Fatal(err)
 }
 ```
 
+## Free and Automatic Let's Encrypt certificates
 
+The [autocert](https://godoc.org/golang.org/x/crypto/acme/autocert) library allows you to automatically request TLS certs for your domains and serve your website with TLS without having to deal directly with a certificate authority, your server will request certificates from [Let's Encrypt ](https://letsencrypt.org/)Authority \(or any other supporting the ACME protocol\).
+
+```go
+domains := "example.com www.example.com"
+email := "me@example.com"
+
+autocertDomains := strings.Split(domains, " ")
+certManager := &autocert.Manager{
+  Prompt:     autocert.AcceptTOS,
+  Email:      email,                                     // Email for problems with certs
+  HostPolicy: autocert.HostWhitelist(autocertDomains...), // Domains to request certs for
+  Cache:      autocert.DirCache("secrets"),               // Cache certs in secrets folder
+}
+server := configuredTLSServer(certManager)
+err := server.ListenAndServeTLS("", "")
+if err != nil {
+  log.Fatal(err)
+}
+```
+
+If you try to run it locally, you'll get the following error:
+
+```
+acme/autocert: host not configured
+```
+
+The code requires 
 
