@@ -118,7 +118,7 @@ This is because ports below 1024 are restricted, and you'll need to use setcap t
 acme/autocert: host not configured
 ```
 
-The autocert library requires your server to run on the IP which maps to the domains you want to secure, so that it can use the ACME protocol to confirm the server's identity and request a cert. So unfortunately you can't try it out locally, you need to run it on a server which maps to the domain you want a certificate for.
+The autocert library requires your server to run on the IP which maps to the domains you want to secure, so that it can use the ACME protocol to confirm the server's identity and request a cert. So unfortunately you can't try it out locally, you need to run it on a server which maps to the domain you want a certificate for. Typically in order to test locally you'd run without TLS on a high port, and then in production you run on a lower port with TLS enabled.
 
-Typically in order to test locally you'd run without TLS on a high port, and then in production you run on a lower port with TLS enabled.
+Congratulations, you have now set up a server which can serve web pages using the latest protocols like http2, and even request its own certificates periodically before they expire.  
 
