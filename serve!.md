@@ -7,14 +7,21 @@ The standard library package [net/http](https://golang.org/pkg/net/http/) allows
 The ListenAndServe function takes a port value \(as a string\), along with a Router \(or a ServeMux as  \(we can leave that nil for now to use the default ServeMux\).
 
 ```go
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
-	})
 
-	log.Fatal(http.ListenAndServe(":3000", nil))
+    
+    // Attach a function to the default ServeMux/Router for the path / (and any path under it)
+    http.HandleFunc("/", handler)
+
+    
+    // Ask the http package to listen on port 3000
+    err := http.ListenAndServe(":3000", nil)
+    if err != nil {
+        log.Fatal(err)
+    }
+    log.Fatal(
+    
+    You can find the code for this first lesson in the examples folder of this repo. Open the first file and paste in the code above, then run it with go run serve.go.
 ```
-
-You can find the code for this first lesson in the examples folder of this repo. Open the first file and paste in the code above, then run it with go run serve.go.
 
 ### Listen and Serve with TLS
 
