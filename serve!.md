@@ -39,13 +39,7 @@ You can then open your web browser at port 3000, and find your web server talkin
 
 ### Listen and Serve with TLS
 
-Serving a website with TLS over https is a simple matter of calling a different function - ListenAndServeTLS to serve using a certificate and key which we provide the path for. We'll need to generate a self-signed cert first. If you have openssl available you can use that. First cd to the directory including your server code, then execute this line and press return for any questions:
-
-```bash
-openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes
-```
-
-Now that you have the key.pem and cert.pem files in the same directory as serve.go, replace the line creating the server with this and try launching it again:
+Serving a website with TLS over https is a simple matter of calling a different function - ListenAndServeTLS to serve using a certificate and key which we provide the path for. Since this is just an example, an insecure test key and cert are provided - open them to discover they are simply text files with encrypted data. On a real server you would use certificates provided by your Certificate Authority. Don't use self-signed keys on a public server, and certainly never these keys, these examples are provided in order to run the example locally. Now that you have the test key.pem and cert.pem files in the same directory as serve.go, replace the line creating the server with this and try launching it again:
 
 ```go
 // Ask the http package to listen with TLS
@@ -98,10 +92,10 @@ server := &http.Server{
     Addr: ":443", // Set the port 
     ReadTimeout:  30 * time.Second,
     WriteTimeout: 60 * time.Second,
-  
+
     // Pass in the autocert manager 
     TLSConfig: &tls.Config{
-	 GetCertificate: certManager.GetCertificate,
+     GetCertificate: certManager.GetCertificate,
     },
 }
 
@@ -110,7 +104,6 @@ err := server.ListenAndServeTLS("", "")
 if err != nil {
   log.Fatal(err)
 }
-
 ```
 
 If you try to run it locally on a linux/unix, you'll get the following error:
@@ -125,7 +118,7 @@ This is because ports below 1024 are restricted, and you'll need to use setcap t
 acme/autocert: host not configured
 ```
 
-The autocert library requires your server to run on the IP which maps to the domains you want to secure, so that it can use the ACME protocol to confirm the server's identity and request a cert. So unfortunately you can't try it out locally, you need to run it on a server which maps to the domain you want a certificate for. 
+The autocert library requires your server to run on the IP which maps to the domains you want to secure, so that it can use the ACME protocol to confirm the server's identity and request a cert. So unfortunately you can't try it out locally, you need to run it on a server which maps to the domain you want a certificate for.
 
-Typically in order to test locally you'd run without TLS on a high port, and then in production you run on a lower port with TLS enabled. 
+Typically in order to test locally you'd run without TLS on a high port, and then in production you run on a lower port with TLS enabled.
 
