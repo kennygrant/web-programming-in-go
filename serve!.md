@@ -57,7 +57,7 @@ if err != nil {
 
 You will then be able to connect to [localhost](https://localhost:3000/tls) using https, though you will have to ignore a warning about your self-signed certificate, which browsers treat as less secure than no certificate at all, this will let you check that your server is using tls though. As a nice bonus, Go supports HTTP/2 - HTTP/2 is enabled automatically if you use TLS and the client supports it.
 
-One oversight in the standard library defaults, which cannot now be changed because of the Go 1 guarantee, is that timeouts are not set by default on the server. You can read more about this [here](https://blog.cloudflare.com/exposing-go-on-the-internet/). So in a slight addition to our code above, we're going to set timeouts on the server. We can then call a method on the server to start it, rather than setting using the default server with the package level function above. 
+One oversight in the standard library defaults, which cannot now be changed because of the Go 1 guarantee, is that timeouts are not set by default on the server. You can read more about this [here](https://blog.cloudflare.com/exposing-go-on-the-internet/). So in a slight addition to our code above, we're going to set timeouts on the server. To do this we configure a server instance first, and then call a method on the server to start it, rather than using the default server from the package level function above.
 
 ```go
 // Set up a new http server with some default timeouts and port
@@ -79,7 +79,7 @@ if err != nil {
 
 ## Free and Automatic Let's Encrypt certificates
 
-The [autocert](https://godoc.org/golang.org/x/crypto/acme/autocert) library allows you to automatically request TLS certs for your domains and serve your website with TLS without having to deal directly with a certificate authority, your server will request certificates from [Let's Encrypt ](https://letsencrypt.org/)Authority \(or any other supporting the ACME protocol\).
+The [autocert](https://godoc.org/golang.org/x/crypto/acme/autocert) library allows you to automatically request TLS certs for your domains and serve your website with TLS without having to deal directly with a certificate authority, your server will request certificates from [Let's Encrypt ](https://letsencrypt.org/)Authority \(or any other supporting the ACME protocol\). As you can see from the code below, this is just a few more lines of code.
 
 ```go
 domains := "example.com www.example.com"
@@ -88,22 +88,44 @@ email := "me@example.com"
 autocertDomains := strings.Split(domains, " ")
 certManager := &autocert.Manager{
   Prompt:     autocert.AcceptTOS,
-  Email:      email,                                     // Email for problems with certs
+  Email:      email,                                      // Email for problems with certs
   HostPolicy: autocert.HostWhitelist(autocertDomains...), // Domains to request certs for
   Cache:      autocert.DirCache("secrets"),               // Cache certs in secrets folder
 }
-server := configuredTLSServer(certManager)
+
+// Set up the server with timeouts and the autocert manager
+server := &http.Server{
+    Addr: ":443", // Set the port 
+    ReadTimeout:  30 * time.Second,
+    WriteTimeout: 60 * time.Second,
+  
+    // Pass in the autocert manager 
+    TLSConfig: &tls.Config{
+	 GetCertificate: certManager.GetCertificate,
+    },
+}
+
+// Start the TLS server, giving it no cert and key (it uses autocert for this)
 err := server.ListenAndServeTLS("", "")
 if err != nil {
   log.Fatal(err)
 }
+
 ```
 
-If you try to run it locally, you'll get the following error:
+If you try to run it locally on a linux/unix, you'll get the following error:
+
+```
+listen tcp :443: bind: permission denied
+```
+
+This is because ports below 1024 are restricted, and you'll need to use setcap to give your app permission. If you do that you'd also receive an error:
 
 ```
 acme/autocert: host not configured
 ```
 
-The code requires 
+The autocert library requires your server to run on the IP which maps to the domains you want to secure, so that it can use the ACME protocol to confirm the server's identity and request a cert. So unfortunately you can't try it out locally, you need to run it on a server which maps to the domain you want a certificate for. 
+
+Typically in order to test locally you'd run without TLS on a high port, and then in production you run on a lower port with TLS enabled. 
 
