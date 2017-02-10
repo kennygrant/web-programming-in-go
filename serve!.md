@@ -33,7 +33,7 @@ if err != nil {
 
 You can find the code for this first lesson in the examples folder of this repo at 1-Serve/serve.go. Open the first file and paste in the code above, then run it with go run serve.go.
 
-You can then open your web browser at port 3000, and find your web server talking to you. Go ahead and visit [localhost](http://localhost:3000/world), I'll wait here. You'll notice that the server calls your handler for any path since it was attached to / - this is a feature of the default router, which you can change later if you wish. 
+You can then open your web browser at port 3000, and find your web server talking to you. Go ahead and visit [localhost](http://localhost:3000/world), I'll wait here. You'll notice that the server calls your handler for any path since it was attached to / - this is a feature of the default router, which you can change later if you wish.
 
 ![](/assets/hello-world.png)
 
@@ -50,10 +50,10 @@ Now that you have the key.pem and cert.pem files in the same directory as serve.
 ```go
 // Set up a new http server with some default timeouts and our desired 
 server := &http.Server{
-		// Set the port in the preferred string format
-	Addr: ":3000",
+        // Set the port in the preferred string format
+    Addr: ":3000",
 }
-	
+
 // Ask the http package to listen with TLS
 err := http.ListenAndServeTLS("cert.pem", "key.pem")
 if err != nil {
