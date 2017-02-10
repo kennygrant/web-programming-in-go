@@ -39,7 +39,7 @@ You can then open your web browser at port 3000, and find your web server talkin
 
 ### Listen and Serve with TLS
 
-Serving a website with TLS over https is a simple matter of calling a different function - ListenAndServeTLS to serve using a certificate and key which we provide the path for. Since this is just an example, an insecure test key and cert are provided - open them to discover they are simply text files with encrypted data. On a real server you would use certificates provided by your Certificate Authority. Don't use self-signed keys on a public server, and certainly never these keys, these examples are provided in order to run the example locally. Now that you have the test key.pem and cert.pem files in the same directory as serve.go, replace the line creating the server with this and try launching it again:
+Serving a website with TLS over https is a simple matter of calling a different function - ListenAndServeTLS to serve using a certificate and key which we provide the path for. Since this is just an example, an insecure test key and cert are provided - open them to discover they are simply text files with encrypted data. On a real server you would use certificates provided by your Certificate Authority. Don't use self-signed keys on a public server, and certainly never these keys, these examples are provided in order to run the example locally. Since you have the test key.pem and cert.pem files in the same directory as serve.go, replace the line creating the server with this and try launching it again:
 
 ```go
 // Ask the http package to listen with TLS
