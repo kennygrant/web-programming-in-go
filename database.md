@@ -1,4 +1,2 @@
 # Connecting to the Database
 
-
-
