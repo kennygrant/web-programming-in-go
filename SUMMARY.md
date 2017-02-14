@@ -2,6 +2,7 @@
 
 * [Introduction](README.md)
 * [Serve!](serve!.md)
+* [Configuration](configuration.md)
 * [Routes](routes.md)
 * [Middleware](middleware.md)
 * [Logging](logging.md)
@@ -11,6 +12,8 @@
 * [Security](security.md)
 * [Structure](structure.md)
 * [Resources](resources.md)
+* [Handlers](handlers.md)
 * [Testing](testing.md)
+* [Deployment](deployment.md)
 * [Join the club](visit-gophr.club.md)
-
+* [Glossary](glossary.md)

@@ -5,9 +5,9 @@ The Go Standard Library has simple templating for text files and html files buil
 
 ### Helper functions
 
-You can define helper functions. 
+You can define helper functions in Go for each template, however most applications will have a common set of functions which are applied to all templates. 
 
-
+While you can put a lot of functions into your templates, you should try to restrict these to formatting or passing data in from global data, rather than containing too much logic. Most of your logic should live in the resources and your handlers, with helper functions simply used to format data in resources. 
 
 ### Data
 
@@ -61,6 +61,28 @@ The package also defines some typed strings which you can use to declare content
 ### Loading templates 
 
 Let's load the templates we need from our app. We'll load all the templates into one set, apply our functions to them, and store them ready for rendering later. To get hot reload of templates as they change during development, we can simply reload them on every request. 
+
+
+## Common Pitfalls
+
+Go templates require other templates to be loaded in the same context to be referenced. You may want to define one root set of templates and include all your templates in it. 
+
+Go templates use prefix notation even for operators like and (they are defined as functions), so they come before both arguments. Thus you use:
+
+{{if  and .page.Published .user.Admin }}
+// NOT {{if .page.Published and .user.Admin }}
+
+Also, the operators do not do short circuit evaluation, all arguments are evaluated before the function is called, this means you cannot rely on something like this to work if .user is nil:
+
+{{ if and .user .user.Admin }}
+
+you must instead nest the if check:
+
+{{ if .user}} {{ if .user.Admin }} {{ end }} {{ end }}
+
+
+When writing headers, you should always call WriteHeader once (never twice), and always call it after calling SetHeader, or SetHeader will be ignored (CHECK).
+
 
 
 ## References 

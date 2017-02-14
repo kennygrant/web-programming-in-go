@@ -42,6 +42,7 @@ See this [talk](https://golangnews.com/stories/1469) and [Go Crypto examples](ht
 
 Some references to example code for authorisation and crypto:
 
+* [Go Crypto Explained](https://golangnews.com/stories/1469) A talk from George Tankersley on Crypto in Go
 * [Go Crypto](https://github.com/gtank/cryptopasta) examples from George Tankersley at Coreos
 * [Gorilla sessions](https://github.com/gorilla/sessions)
 * [Gorilla csrf](https://github.com/gorilla/csrf)
