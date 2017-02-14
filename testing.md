@@ -1,14 +1,14 @@
 # Testing in Go
 
+You may be tempted to look for a testing framework, but you probably don't need one. Try it with the std lib first, and if you find yourself frustrated in ways that can't be solved with a few helper functions, *then* look at the options available. 
+
+## Table drive tests 
+
+Look at std lib. 
 
 
 
-
-Also tracing? 
-
-
-Debugging 
-
+## Debugging 
 
 "The most important debugging tool is a reproducible test case."
 

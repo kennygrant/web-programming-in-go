@@ -15,5 +15,5 @@
 * [Handlers](handlers.md)
 * [Testing](testing.md)
 * [Deployment](deployment.md)
-* [Join the club](visit-gophr.club.md)
+* [Join the club](gophrclub.md)
 * [Glossary](glossary.md)

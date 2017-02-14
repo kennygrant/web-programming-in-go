@@ -14,7 +14,9 @@ This glossary contains terms used in Go web programming which you might not be i
 * Postgresql - a popular SQL relational database, more rigorous than MySQL 
 * MySQL - a popular SQL relational database
 * Sqlite - a popular SQL relational database, unfortunately C-only so requires CGO
-* Middleware 
+* Middleware - functions which wrap other functions
 * Structured logging - sending log entries in the form of key/value pairs, rather than simply strings
-* AES - Advanced Encryption Standard used for encryption
- 
+* AES - Advanced Encryption Standard GCM symmetric key encryption available in the Go stdlib. 
+* HMAC - a method of verifying encryption 
+* Bcrypt - a one-way hash function designed to be slow enough for hashing passwords
+* PGP - Pretty Good Encryption, public key encryption available in the Go stdlib. 
