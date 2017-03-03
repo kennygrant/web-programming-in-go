@@ -26,6 +26,11 @@ There are a few ways of doing this (with Authorise headers, with encrypted cooki
 A simple approach is to check for this cookie in middleware, and then query for it as necessary in the cookie of the request. (link to example, also show snippet here):
 
 
+### Paths and Security 
+
+Be aware that when you're choosing which routes you , you don't inadvertantly open your app to a directory traversal attack - this attack lets the attacker inject an unexpected path from the file system (for example by using /../ in urls), and. So a naive file handler might serve up unexpected files if given a path which triggered a directory traversal. 
+
+For this reason you should silo only public documents inside your web root at public (never keep private documents there), and never allow handlers to access files outside of this by paths which are tainted by information from the outside world. 
 
 
 ## Acting on Resources

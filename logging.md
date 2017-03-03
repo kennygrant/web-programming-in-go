@@ -26,3 +26,4 @@ gokit log
 new project logging 
 influxdb 
 grafana 
+[12 Factor logging](https://github.com/agnivade/funnel)

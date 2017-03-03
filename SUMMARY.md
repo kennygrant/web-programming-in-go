@@ -17,3 +17,4 @@
 * [Deployment](deployment.md)
 * [Join the club](gophrclub.md)
 * [Glossary](glossary.md)
+* [Open-Source Go](opensource.md)

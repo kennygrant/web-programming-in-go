@@ -18,7 +18,6 @@ Because Go is open source, you can go and have a look at the [DefaultServeMux](h
 * It doesn't let you define groups of routes
 
 
-
 ### Context
 
 In Go 1.7 a new package was introduced to the Standard Library which is intended to allow passing request-scoped values (for example deadlines, cancellations, user ids, request ids) across goroutines and backends so that the caller can cancel a request easily for example, and all resources being used for it will be cleaned up.
