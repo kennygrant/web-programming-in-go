@@ -7,8 +7,12 @@ import (
 	"net/http"
 )
 
+// This app is solely here so that this repo is go gettable,
+// but it'd be nice if the book could host itself locally...
+// just load and transform the markup files.
+
 // handler says hello and echoes the request path
-// eventually we should serve the markdown of the book converted to html. 
+// eventually we should serve the markdown of the book converted to html.
 func handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
 }

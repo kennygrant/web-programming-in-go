@@ -80,7 +80,7 @@ func(f *FooHandler)ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 For example in Buffalo models package there is a DB connection using the pop ORM, which is set up in init. This is used by all models to store themselves in the database. 
 
-```
+```go
 package models
 ...
 // DB is a connection to your database to be used
@@ -94,7 +94,7 @@ Testing with this approach would require testing with handlers.
 
 So for example on startup the app would call 
 
-```
+```go
 mail.Setup(config.Get("from"),config.Get("secret"))
 ```
 
@@ -102,7 +102,7 @@ and set up the mail package.
 
 The importers simply call:
 
-```
+```go
 email := mail.New("recipient@example.com")
 mail.Send(email)
 ```

@@ -1,12 +1,12 @@
 # Summary
 
-* [Introduction](README.md)
-* [Serve!](serve!.md)
-* [Configuration](configuration.md)
+* [Introduction](README.md) ✓
+* [Serve!](serve!.md) ✓
+* [Configuration](configuration.md) ✓
 * [Routes](routes.md)
 * [Middleware](middleware.md)
 * [Logging](logging.md)
-* [Errors](errors.md)
+* [Errors](errors.md) ✓
 * [Templates](templates.md)
 * [Database](database.md)
 * [Security](security.md)
@@ -18,3 +18,4 @@
 * [Join the club](gophrclub.md)
 * [Glossary](glossary.md)
 * [Open-Source Go](opensource.md)
+* [Goto fail](gotofail.md)

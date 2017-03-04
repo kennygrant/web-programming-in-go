@@ -14,7 +14,7 @@ While you can put a lot of functions into your templates, you should try to rest
 Data can be passed in to templates and referenced using the dot syntax. So for example if you pass in a user as the template context, you'll be able to access it within the template like so:
 
  
-```go
+```html
   {{ .user }}
 ```
 
@@ -24,7 +24,7 @@ As your templates get more complex, and require more and more objects, you can e
 
 The templates allow you to refer to other templates as long as they are registered on the parent. One way to use this is to register all your templates on the same set, so that every template can refer to every other one. To render a template within another template (assuming templates are stored with a relative path as their key), use:
 
-```go
+```html
  {{ template "path/to/template" . }}
 ```
 
@@ -34,7 +34,8 @@ Go templates don't have explicit support for the concept of layouts, though ther
 
 
 Layout file:
-```go
+
+```html
   <html>
   <body>
   <header></header>
@@ -45,7 +46,7 @@ Layout file:
 
 
 Partial file to place into content key when rendering:
-```go
+```html
   {{ .user.Name }}
 ```
 

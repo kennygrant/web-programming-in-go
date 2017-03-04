@@ -24,5 +24,5 @@ The exercises in this book have been tested on Mac OS X and Linux and some advic
 
 ### Let's build something real
 
-As you follow along with the exercises in this book, you're going to build a service very like twitter, complete with handles, avatars,  and inane wittering.
+As you follow along with the exercises in this book, you're going to build a service very like twitter, complete with handles, avatars, and inane wittering.
 

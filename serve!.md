@@ -108,13 +108,13 @@ if err != nil {
 
 If you try to run it locally on a linux/unix, you'll get the following error:
 
-```
+```sh
 listen tcp :443: bind: permission denied
 ```
 
 This is because ports below 1024 are restricted, and you'll need to use setcap to give your app permission. If you do that you'd also receive an error:
 
-```
+```sh
 acme/autocert: host not configured
 ```
 

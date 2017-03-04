@@ -12,10 +12,12 @@ While it is tempting to measure something like a router purely on performance, u
 Because Go is open source, you can go and have a look at the [DefaultServeMux](https://golang.org/src/net/http/server.go?#L1865) yourself in the standard library. This is a fairly simple router which has a few drawbacks -
 
 * It doesn't let you collect parameters at all, name them or limit their content
-
 * It doesn't guarantee the evaluation order of routes
-
 * It doesn't let you define groups of routes
+
+For many uses, it's completely acceptable. If you want to have some control over how parameters appear in your routes though, you may want to write your own router which has slightly more sophisticated route parsing. 
+
+
 
 
 ### Context

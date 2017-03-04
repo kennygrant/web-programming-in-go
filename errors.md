@@ -4,7 +4,7 @@ People coming from other languages are often surprised by the simplistic nature 
 
 * Don't use panic for normal errors
 * Return early, use if err != nil return and then continue on the happy path
-* Do handle errors, don't use _ to ignore them
+* Do handle errors, never use _ to ignore them (rarely you can may it to ignore other vars)
 * Do handle errors as close to the point of error as possible 
 * Do store information about the problem (using custom types if necessary)
 * In a web application, inform the user of exactly what went wrong - don't tell them 'Internal Server Error'
@@ -48,7 +48,7 @@ if err == nil  {
 }
 ```
 
-See [Line of sight](https://medium.com/@matryer/line-of-sight-in-code-186dd7cdea88) by Mat Ryer for more explanation. 
+See [Line of sight](https://medium.com/@matryer/line-of-sight-in-code-186dd7cdea88) by Mat Ryer for another explanation of this style, which is pervasive in Go code. 
 
 
 ### Errors are Values
@@ -90,7 +90,7 @@ Unfortunately Go doesn't have an elegant way to handle errors in handlers built-
 
 1. Handle the error by rendering it somehow, then return
 
-```
+```go
 if err != nil {
   log.Printf("myhandler: %s",err)
   server.RenderError("User Not Found", "Sorry, this user couldn't be found")
@@ -100,7 +100,7 @@ if err != nil {
 
 2. Change the handler signature to return an error (probably a custom error type), and handle it with an error handler which you define. 
 
-```
+```go
 if err != nil {
   return server.NotFound(err,"User Not Found", "Sorry, this user couldn't be found")
 }
