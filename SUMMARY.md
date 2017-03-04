@@ -5,7 +5,7 @@
 * [Configuration](configuration.md) ✓
 * [Routes](routes.md)
 * [Middleware](middleware.md)
-* [Logging](logging.md)
+* [Logging](logging.md) ✓
 * [Errors](errors.md) ✓
 * [Templates](templates.md)
 * [Database](database.md)
@@ -16,6 +16,6 @@
 * [Testing](testing.md)
 * [Deployment](deployment.md)
 * [Join the club](gophrclub.md)
-* [Glossary](glossary.md)
 * [Open-Source Go](opensource.md)
-* [Goto fail](gotofail.md)
+* [Glossary](glossary.md) ✓
+* [Goto fail](gotofail.md) ✓

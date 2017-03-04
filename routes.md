@@ -1,10 +1,10 @@
 # Routing in Go
 
-Since Go has a rather limited router in the standard library, many people have built their own. At the end of this chapter there are links to a few more popular routers, with a short overview of each. 
+Since Go has a very simplistic router in the standard library, many people have built their own. At the end of this chapter there are links to a few more popular routers, with a short overview of each. 
 
 ### A note on performance
 
-While it is tempting to measure something like a router purely on performance, unless it is pathologically slow \(e.g. uses regexp in a naive way or allocates a lot for every request\) it is not likely to take up many resources compared to your handlers which have to talk to the database and write responses. So measures of performance on routers are useful  indicators but should not be your primary concern when choosing one. Factors which will usually be more important are the way it parses parameters, control over evaluation order of routes, support for middleware and the handler signatures.
+While it is tempting to measure something like a router purely on performance, unless it is pathologically slow (e.g. uses regexp in a naive way or allocates a lot on every new request ) it is not likely to take up many resources compared to your handlers which have to talk to the database and write responses. So measures of performance on routers are useful indicators but should not be your primary concern when choosing one. Factors which will usually be more important are the way it parses parameters, control over evaluation order of routes, support for middleware and the handler signatures.
 
 
 ### Let's build a ServeMux
@@ -15,18 +15,36 @@ Because Go is open source, you can go and have a look at the [DefaultServeMux](h
 * It doesn't guarantee the evaluation order of routes
 * It doesn't let you define groups of routes
 
-For many uses, it's completely acceptable. If you want to have some control over how parameters appear in your routes though, you may want to write your own router which has slightly more sophisticated route parsing. 
+However for many uses, it's completely acceptable. If you want to have some control over order of evaluation, or named parameters in your routes, you may want to find a router which has slightly more sophisticated route parsing, or write your own, as routers can be very simple. 
+
+Let's start with a router, which has a list of routes, which you can add to with .Add(). 
+
+```go 
+type Route struct {
+  Path string 
+  Handler http.HandlerFunc
+}
+
+type Router struct {
+  routes []*Route
+}
+
+// Add a route to our list of routes to evaluate
+func (r Router)Add(p string,fn http.HandlerFunc) {
+  routes = append(routes,&Route{Path:p,Handler:fn})
+}
 
 
-
+```
 
 ### Context
 
 In Go 1.7 a new package was introduced to the Standard Library which is intended to allow passing request-scoped values (for example deadlines, cancellations, user ids, request ids) across goroutines and backends so that the caller can cancel a request easily for example, and all resources being used for it will be cleaned up.
 
-In the context of a simpler web app this can be useful for passing values between middleware and handlers, and between handlers and goroutines they spawn to perform tasks like sending mail. 
+In the context of a simpler web app this can be useful for passing *request-specific* values between middleware and handlers, and between handlers and goroutines they spawn to perform tasks like sending mail. You should not abuse it to send lots of data though - better to pass in dependencies. 
 
-It should not be used for passing dependencies like loggers or database connections, or convenient globals like a pointer to your app instance which contains these things.  
+It should not be used for passing dependencies like loggers or database connections, or convenient globals like a pointer to your app instance which contains these things. There are other better ways to access dependencies rather than attaching them to a request object which really has nothing to do with them. 
+
 
 ### Handler definitions 
 
@@ -42,6 +60,9 @@ For this reason I recommend sticking with the standard handler definition, which
 
 ## Popular routers 
 
+While benchmarks are not the primary criteria for choosing code, it is important that your router doesn't introduce too much latency in your application, as it will delay every request, you can find some simple benchmarks of these routers here: https://github.com/kennygrant/routebench
+
+
 #### Gorilla Mux
 Handler signature: ```go func (w http.ResponseWriter, req *http.Request) ```
 Route signature: /hello/{param:\d+}
@@ -49,31 +70,31 @@ Advantages: Flexible regexp params, stdlib signature
 Disadvantages: Slightly slower, doesn't support middleware
 This router is similar to the stdlib mux but uses regexp to evaluate params. It is probably the most commonly used router and was released early on. 
 
+#### Fragmenta Mux 
+Handler signature: ```go func (w http.ResponseWriter, req *http.Request) error ```
+Route signature: /hello/{param:\d+}
+Advantages: Ordered evaluation, regexp params, deferred parsing of params, Supports middleware
+Disadvantages: Requires handlers to return error
+This router takes a similar approach to the Gorilla mux in using regexp to define paramaters, so route definitions are the same. It supports middleware chains, and deferred parsing of params so that they are not parsed until required. 
+
 #### HttpRouter 
 Handler signature: ```go func (w http.ResponseWriter, req *http.Request) ```
 Route signature: /hello/:param
 Advantages: Fast, stdlib signature
 Disadvantages: Can't specify param type, Can't handle all routes
-This router is focussed on speed, and uses a data structure. It may be suitable for larger 
-
-#### Fragmenta Mux 
-Handler signature: ```go func (w http.ResponseWriter, req *http.Request) error ```
-Route signature: /hello/:param
-Advantages: Ordered evaluation, regexp params, deferred parsing of params, Supports middleware
-Disadvantages: Requires handlers to return error
-This router takes a similar approach to the Gorilla mux in using regexp to define paramaters, so route definitions are the same. It supports middleware chains, and deferred parsing of params so that they are not parsed until required. 
+This router is focussed on speed, and uses a data structure which allows this. It may be suitable for larger sites which don't require control over order of evaluation and have a lot of routes. 
 
 #### Echo 
 Handler signature: ```go func (c echo.Context) error ```
 Route signature: /hello/:param
 Advantages: Supports middleware, Grouped APIs
 Disadvantages: Custom handlers, expanded scope
-This has ambitions to be more than a router, expanding into serving, logging, view rendering, so it is perhaps better through of as a framework. 
+This has ambitions to be more than a router, expanding into serving, logging, view rendering, so it is perhaps better thought of as a framework. 
 
 #### Bufallo
 Handler signature: ```go func(c buffalo.Context) error ```
 Limitations: Ordered evaluation of routes
-This router takes a similar approach to the.  
+This router takes a similar approach to the gorilla one, but has does do significantly more work for every evaluation of a route. It is relatively new and will probably improve with time.  
 
 There is a set of benchmarks of Golang routers here, to give a rough idea of relative performance with large sets of routes. If your app has less than 50 routes this is unlikely to matter, and even then other factors are probably more important in most cases.   
 

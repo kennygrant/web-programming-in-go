@@ -7,7 +7,7 @@ People coming from other languages are often surprised by the simplistic nature 
 * Do handle errors, never use _ to ignore them (rarely you can may it to ignore other vars)
 * Do handle errors as close to the point of error as possible 
 * Do store information about the problem (using custom types if necessary)
-* In a web application, inform the user of exactly what went wrong - don't tell them 'Internal Server Error'
+* In a web application, inform the user of exactly what went wrong - don't tell them 'Internal Server Error', tell them 'Your date needs to be in the format 2010-12-31'.
 
 ### Panic is not for errors
 
@@ -106,7 +106,7 @@ if err != nil {
 }
 ```
 
-They are not very different, but I find it slightly more elegant to have a central error handler, which can decide whether to log or not, and can use a common template to render the error gracefully, and on one line rather than two. As handlers typically contain several possible error paths each, the extra return line does add up. The advantage of option 1 is it sticks to the standard http.HandlerFunc signature.  
+They are not very different, but I find it slightly more elegant to have a central error handler, which can decide whether to log or not, and can use a common template to render the error gracefully, and on one line rather than two. As handlers typically contain several possible error paths each, the extra return line does add up. The advantage of option 1 is it sticks to the standard http.HandlerFunc signature, the disadvantage is the requirement to remember another line with return straight after the error.  
 
 
 ## References 

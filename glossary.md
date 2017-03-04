@@ -2,6 +2,8 @@
 
 This glossary contains terms used in Go web programming which you might not be instantly familiar with. 
 
+* Array - an ordered collection of items
+* Map - an unordered collection of items stored by a hashed key for fast access.
 * MVC - a popular approach to web programming (borrowed from desktop apps), which splits the app into Models (data, logic), View which presents the data, and Controllers (accepts input, converts data for view).
 * Resource - the nouns which web browsers manipulate via http verbs. 
 * Handlers - respond to URLS on your server, normally each endpoint is assigned a handler. 
