@@ -15,6 +15,8 @@ Go allows you to compose objects, but this is not the same as inheritance. If fi
 
 Never ignore errors (either with _ or by omitting to assign them). Never use panic in place of error handling (except in very simple command line apps). 
 
+Don't use panic as a poor substitute for exceptions, it was included for truly exceptional circumstances. Go doesn't have exceptions by design, which is probably a good thing - as an indication of current thinking on this current Google guidelines for C++ disallow the use of exceptions in that language as well. 
+
 ### Why can't I ignore GoPath
 
 This may change in future, but for now the tools rely on GOPATH in order to make installs easier and find your code. So put your code in GOPATH and be happy. 
@@ -128,7 +130,7 @@ strings.TrimRight("wat????hello?","?eloh")
 
 ### Dates 
 
-Beware time.AddDate() - if you're adding months you may get unexpected results due to rollover rules. 
+Beware time.AddDate() - if you're adding months you may get unexpected results due to rollover rules. Give a few examples here and a mitigation - workaround always add to 1st of month, then add days in a separate operation. Actually fixing is harder and requires a new library.   
 
 
 ### Strings and Ints 
@@ -157,3 +159,18 @@ Converting an int to a string using the strconv package:
   fmt.Sprintf("%d->%s",i,s)
   
 ```
+
+### Struct Tags
+
+Struct tags can be used to define the translation from Go fields to json, xml and database columns. You don't have to use them and I'd recommend choosing an ORM which doesn't rely on them, as declaring relations in string tags attached to fields is error prone and fragile.
+
+### Why are comments used as directives?
+
+It's true, comments can be used to: 
+
+* //go:generate bar - for a code generator
+* //import "foo" - set the canonical import path
+* //Output: foo - less crucially, document the result for an example function.
+
+This is ugly and fragile, and doesn't even have a consistent syntax, but you're unlikely to add comments with exactly this syntax and break something. Perhaps in Go 2.0 they'll tidy some of this up. 
+

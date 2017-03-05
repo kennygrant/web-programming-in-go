@@ -60,6 +60,18 @@ When your application grows to any significant size, you'll find your handlers n
 
 ### Wrap handlers and inject dependencies as scoped variables 
 
+```go
+handler := NewFooHandler(db, etc...)
+
+type FooHandler struct{
+   db DB
+}
+
+func(f *FooHandler)ServeHTTP(w http.ResponseWriter, r *http.Request) {
+  f.db.Save("hello, world") 
+}
+```
+
 
 ### Inject into objects and attach handlers as methods
 

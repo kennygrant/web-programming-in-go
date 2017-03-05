@@ -111,6 +111,7 @@ They are not very different, but I find it slightly more elegant to have a centr
 
 ## References 
 
+* [http.Handler and Error Handling in Go](https://elithrar.github.io/article/http-handler-error-handling-revisited/)
 * [Error Handling and Go](https://blog.golang.org/error-handling-and-go)
 * [Error handling vs Exceptions](https://dave.cheney.net/2014/11/04/error-handling-vs-exceptions-redux)
 * [Line of sight](https://medium.com/@matryer/line-of-sight-in-code-186dd7cdea88) explains why you should try to avoid else.

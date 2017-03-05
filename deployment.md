@@ -31,18 +31,33 @@ If you're deploying an application into production, you should have a staging en
 
 ### VPS (Digital Ocean etc)
 
-This is cheap and fast, and will get you familiar with operating servers, which is always a useful skill. So it's worth considering for any personal projects, and even for. golangnews.com is hosted this way. 
+This is cheap and fast, and will get you familiar with operating servers, which is always a useful skill. So it's worth considering for any personal projects or for small professional ones. If you need to use docker to package apps, you'll know about it. golangnews.com is hosted this way. 
 
-Systemd is now the default init system on Ubuntu LTS, CoreOS, and most other flavours of Linux. 
+Systemd is now the default init system on Ubuntu LTS, CoreOS, and most other flavours of Linux. If using cloud config to set it up, be sure to set runtime: true, so that your service runs after restart. 
 
 
 ```service 
+[Unit]
+Description=Gopher Club Server
+Documentation=https://gophr.club
+After=network.target
 
-system d unit file here. 
+[Service]
+User=core
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+NoNewPrivileges=true
+LimitNOFILE=1048576
 
+Environment="FRAG_ENV=production"
+WorkingDirectory=/srv/gophr.club
+ExecStart=/srv/gophr.club/bin/fragmenta-server
+Restart=always
+RestartSec=1
+TimeoutStartSec=2
 
-
-
+[Install]
+WantedBy=multi-user.target
 
 ```
 
@@ -63,9 +78,6 @@ Add a simple example of Docker deploy here.
 PAAS platforms allow you to. The disadvantages are that they tie you in to particular ways of doing things (storage, APIs etc), and it becomes harder to port your app to different platforms. For example if you start using GAE storage, it will be harder to port it over to AWS later. 
 
 An example of this type of service (or rather a level above it, PAAS) is heroku, built on top of AWS. Below is an example of deploying a go app to heroku. 
-
-
-
 
 
 ## References 

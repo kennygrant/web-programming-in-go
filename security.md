@@ -35,6 +35,9 @@ We're going to explore simple role based authorisation using an integer role key
 CODE
 
 
+### User Input 
+
+
 ### Form Validation
 
 You should make sure that the user cannot pass unanticipated fields in forms to your update functions, and that the values which are passed are not out of range. An example of this would be passing in a user_id on a form to update a page which contains no such field, and reassigning the ownership of the page using the user_id key. Never trust that what your forms specify is what your handlers will receive, and whitelist which parameters you expect to process both for updating models and for display in the view. 
@@ -48,6 +51,8 @@ homakov github vuln with setting owner of repo?
 
 
 ### CSRF 
+
+Mention new same-site cookie attribute, now supported in Chrome and many other browsers.
 
 
 
@@ -97,9 +102,11 @@ The author of this title is not a security expert, I welcome comments and correc
 
 Some references to example code for authorisation and crypto:
 
+
 * [Go Crypto Explained](https://golangnews.com/stories/1469) A talk from George Tankersley on Crypto in Go
 * [Go Crypto](https://github.com/gtank/cryptopasta) examples from George Tankersley at Coreos
 * [Gorilla Sessions](https://github.com/gorilla/sessions)
+* [Same-Site Cookies](https://www.netsparker.com/blog/web-security/same-site-cookie-attribute-prevent-cross-site-request-forgery/)
 * [Gorilla CSRF](https://github.com/gorilla/csrf)
 * [Preventing CSRF](https://elithrar.github.io/article/preventing-csrf-attacks-in-go/)
 * [Fragmenta Auth (sessions, cookies, csrf, passwords)](https://github.com/fragmenta/auth) 
