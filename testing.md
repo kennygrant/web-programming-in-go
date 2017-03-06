@@ -57,6 +57,12 @@ func BenchmarkBigLen(b *testing.B) {
 }
 ```
 
+Beware though testing the wrong thing. Micro-benchmarks are useful for comparing one version of a function to another, but they are pretty useless at determining the actual performance impact in production. You might improve a routing function 100% and have very little impact in the real world because you changed timing from 0.0002ms to 0.0001ms. To improve performance you should use other tools like flame graphs in order to pinpoint where you are spending most of your time.
+
+Using benchmarks to compare solutions can lead to an obsession with performance and allocations which overrides all other concerns this is not healthy - consider that the vast majority of web apps you'll ever write will not be constrained by performance and spend your time improving the UI, the docs, the API and every other part of your project. Especially dangerous is using benchmarking tools to compare large collections of code like web frameworks on one metric like response time.
+
+So use benchmarks responsibly for profiling your own code, not as the only metric for comparing it with others. 
+
 ## Unit Tests 
 
 Many of your functions and methods should be testable without any external state. They should operate solely on the parameters and, sometimes, on the data stored in the object they are attached to. This means you can easily test them in isolation. Any functions you can't test in isolation, like handlers, should be tested with integration tests (see below). Unit tests do not use the database or other external state, which makes them extremely easy to test in isolation and reason about.  

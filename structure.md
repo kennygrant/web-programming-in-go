@@ -124,6 +124,5 @@ with the information on the message they want to send, without worrying about ho
 Testing with this approach just means calling setup methods before tests with either mock setup details or alternative test account details for the service concerned (for example a test database).
 
 
-
 * [Style Guidelines for Packages](https://rakyll.org/style-packages/)
 * [Standard Package Layout ](https://medium.com/@benbjohnson/standard-package-layout-7cdbc8391fc1#.k8xq7h19a)

@@ -1,5 +1,7 @@
 # Web Programming in Go
 
+CAVEAT EMPTOR: This book is still in draft form and much content may change. Please submit an issue or pull request to the repo if you notice a mistake. 
+
 This book will guide you through the process of building a complex web app with Go, similar to one you might build in other programming languages with Rails, Django or Flask. Readers coming from other languages or frameworks should not find it difficult to translate this knowledge to Go, but there is a dearth of examples of the details required to handle all the mundane activities of a web app - authentication, authorisation, templates, error handling, async operations etc.
 
 ### Code examples
@@ -21,10 +23,3 @@ This book is not a guide to writing command line apps, microservices, or APIs in
 There are often arbitrary choices to be made \(for example about project layout, or which library to use\), and this book is not intended to be a prescriptive guide to the only way to produce Go applications. Suggestions for alternative approaches are welcome and may be included in future editions. 
 
 The exercises in this book have been tested on Mac OS X and Linux and some advice may be OS specific, but the vast majority of code should run on Windows as well as linux. If you spot an error or have a suggestion for improvements, please let me know by filing an issue against the github repo for the book.
-
-### Let's build something useful
-
-As you follow along with the exercises in this book, you're going to build a service very like twitter, complete with handles, avatars, and inane wittering. You can see the finished product over at gophr.club. 
-
-[Screenshot]
-

@@ -4,8 +4,7 @@ Since Go has a very simplistic router in the standard library, many people have 
 
 ### A note on performance
 
-While it is tempting to measure something like a router purely on performance, unless it is pathologically slow (e.g. uses regexp in a naive way or allocates a lot on every new request ) it is not likely to take up many resources compared to your handlers which have to talk to the database and write responses. So measures of performance on routers are useful indicators but should not be your primary concern when choosing one. Factors which will usually be more important are the way it parses parameters, control over evaluation order of routes, support for middleware and the handler signatures.
-
+While it is tempting to measure something like a router purely on performance, unless it is pathologically slow (e.g. uses regexp in a naive way or allocates a lot on every new request) it is not likely to take up many resources compared to your handlers which have to talk to the database and write responses. So measures of performance on routers *are* useful indicators but should not be your primary concern when choosing one. As the end user of a router factors which will usually be more important are the way it parses parameters, control over evaluation order of routes, support for middleware and the handler signatures. 
 
 ### Let's build a ServeMux
 
@@ -15,27 +14,51 @@ Because Go is open source, you can go and have a look at the [DefaultServeMux](h
 * It doesn't guarantee the evaluation order of routes
 * It doesn't let you define groups of routes
 
-However for many uses, it's completely acceptable. If you want to have some control over order of evaluation, or named parameters in your routes, you may want to find a router which has slightly more sophisticated route parsing, or write your own, as routers can be very simple. 
+However for many uses, it's completely acceptable. If you want to have some control over order of evaluation, or named parameters in your routes, you may want to find a router which has slightly more sophisticated route parsing, or write your own.
 
-Let's start with a router, which has a list of routes, which you can add to with .Add(). 
+Let's start with a router, which has a list of routes, which you can add to with .Add(). The code below is the complete code for a simple router which behaves very much as the built-in servemux does, but preserves evaluation order. 
 
 ```go 
+// Route is a simplistic representation of a route
 type Route struct {
-  Path string 
-  Handler http.HandlerFunc
+  // A path prefix to match 
+	Path    string
+  // A handler to execute if this route matches 
+	Handler http.HandlerFunc
 }
 
+// Router stores a list of routes, protected by a mutex
 type Router struct {
-  routes []*Route
+	mu     sync.RWMutex
+	routes []*Route
 }
 
-// Add a route to our list of routes to evaluate
-func (r Router)Add(p string,fn http.HandlerFunc) {
-  routes = append(routes,&Route{Path:p,Handler:fn})
+// Add a route to our list of routes 
+func (r *Router) Add(p string, fn http.HandlerFunc) {
+	r.mu.Lock()
+	r.routes = append(r.routes, &Route{Path: p, Handler: fn})
+	r.mu.Unlock()
 }
 
+// ServeHTTP serves all HTTP requests
+func (r *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
+  // On receiving a request, walk the list of routes in order of addition
+  // looking for a match. 
+	r.mu.RLock() // Use a read lock to lock writes
+	for _, route := range r.routes {
+		// Return a match if our route prefix matches path
+		if strings.HasPrefix(req.URL.Path, route.Path) {
+			route.Handler(w, req)
+			break
+		}
+	}
+	r.mu.RUnlock() // Use a read unlock
+  
+}
 ```
+
+The mutex is not strictly necessary if you never update the routes after startup on the main goroutine, but is good practice, just in case someone dynamically adds routes during program execution. 
 
 ### Context
 
