@@ -7,7 +7,7 @@
 * [Middleware](middleware.md) ✓
 * [Logging](logging.md) ✓
 * [Errors](errors.md) ✓
-* [Templates](templates.md)
+* [Templates](templates.md) ✓
 * [Database](database.md)
 * [Security](security.md)
 * [Structure](structure.md) ✓

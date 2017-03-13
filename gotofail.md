@@ -162,7 +162,7 @@ Converting an int to a string using the strconv package:
 
 ### Struct Tags
 
-Struct tags can be used to define the translation from Go fields to json, xml and database columns. You don't have to use them and I'd recommend choosing an ORM which doesn't rely on them, as declaring relations in string tags attached to fields is error prone and fragile.
+Struct tags can be used to define the translation from Go fields to json, xml and database columns. You don't have to use them and I'd recommend choosing an ORM which doesn't rely on them, as declaring relations in string tags attached to fields is error prone and fragile. 
 
 ### Why are comments used as directives?
 

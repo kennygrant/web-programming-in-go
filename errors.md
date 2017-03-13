@@ -109,6 +109,9 @@ if err != nil {
 They are not very different, but I find it slightly more elegant to have a central error handler, which can decide whether to log or not, and can use a common template to render the error gracefully, and on one line rather than two. As handlers typically contain several possible error paths each, the extra return line does add up. The advantage of option 1 is it sticks to the standard http.HandlerFunc signature, the disadvantage is the requirement to remember another line with return straight after the error.  
 
 
+TODO: Example - show a stack trace using runtime pkg when in development, so that you can easily pinpoint the error. 
+
+
 ## References 
 
 * [http.Handler and Error Handling in Go](https://elithrar.github.io/article/http-handler-error-handling-revisited/)

@@ -24,7 +24,12 @@ For this simple app we're going to explore using the first approach, storing ses
 
 CODE
 
-OAuth is another popular approach, for an overview of using OAuth to authorise an app, see this article. 
+OAuth is another popular approach, let's try out providing oauth access:
+
+OATH 1 (twitter)
+
+OATH 2 (github)
+
 
 
 ### Authorisation 
