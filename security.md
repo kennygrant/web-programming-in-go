@@ -3,8 +3,8 @@ Security in web apps is a difficult topic. Most web apps contain multiple undisc
 
 The concepts of Authentication and Authorisation are linked, but it is useful to distinguish them. 
 
-* Authentication is how you know a user is who they say they are 
-* Authorisation is how you control what they can access, based on their authenticated user account. 
+* Authentication identifies a user and ensures they are who they say they are 
+* Authorisation controls what they can access, based on their authenticated user account. 
 
 So authentication is required in order to usefully control authorisation. 
 
@@ -89,7 +89,7 @@ The most common pitfalls are:
 * Magically converting user input into a different type depending on its structure 
 * Evaluating user input as code (for example json vulnerabilities)
 
-All of these have in common allowing user input to influence your queries to the database. Always sanitise user input, and where possible use a whitelist of commands which are chosen according to the user input, rather than attempting to sanitise the strings that are fed in.
+All of these have in common allowing user input to influence your queries to the database. Always  sanitise user input for queries, and where possible use a whitelist of commands which are chosen according to the user input, rather than attempting to sanitise the strings that are fed in.
 
 
 #### Example vulnerability 

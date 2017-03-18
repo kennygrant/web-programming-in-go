@@ -12,24 +12,86 @@ Handlers control the flow of requests coming in to the server, and typically sho
 HTTP Requests consist of a URL (which may contain parameters) and (optionally) a body which contains more data usually as a form. 
 
 ```go
-  // Parse URL params from request
+// Add query string params from request
+queryParams := r.URL.Query()
+for k, v := range queryParams {
+  params.Add(k, v)
+}
+
+// If the body is empty, return now without error
+if r.Body == nil {
+  return params, nil
+}
+
+// Parse based on content type - different types must be parsed differently. 
+contentType := r.Header.Get("Content-Type")
+if strings.HasPrefix(contentType, "application/x-www-form-urlencoded") {
+  err := r.ParseForm()
+  if err != nil {
+    return nil, err
+  }
+  // Add the form values
+  for k, v := range r.Form {
+    params.Add(k, v)
+  }
+
+} else if strings.HasPrefix(contentType, "multipart/form-data") {
+  err := r.ParseMultipartForm(20 << 20) // 20MB
+  if err != nil {
+    return nil, err
+  }
+
+  // Add the form values
+  for k, v := range r.MultipartForm.Value {
+    params.Add(k, v)
+  }
+
+  // Add the form files
+  for k, v := range r.MultipartForm.File {
+    params.Files[k] = v
+  }
+}
 
 ```
 
-
-```go
-  // Parse form body params from request
-
-```
-
-Since you will probably be doing this a lot, you may want to pull it out into a function, or use a library that does this already. 
+Since you will probably be doing this a lot, you may want to pull it out into a function, or use a library that does this already. Most of the popular routing packages will offer functions for parsing the request parameters. 
 
 
 ## Authorise 
 
 There are a few ways of doing this (with Authorise headers, with encrypted cookies, with server-side sessions), but here we're going to consider encrypted cookies which are the most common approach taken by web frameworks in other languages like Rails or Django. 
 
-A simple approach is to check for this cookie in middleware, and then query for it as necessary in the cookie of the request. (link to example, also show snippet here):
+A simple approach is to check for this cookie in middleware, and then query for it as necessary in the cookie of the request. Here is an example of middleware to do this. 
+
+```go 
+// Middleware sets a token on every GET request so that it can be
+// inserted into the view. It currently ignores requests for files and assets.
+func Middleware(h http.HandlerFunc) http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		// If a get method, we need to set the token for use in views
+		if shouldSetToken(r) {
+
+			// This sets the token on the encrypted session cookie
+			token, err := auth.AuthenticityToken(w, r)
+			if err != nil {
+				log.Error(log.Values{"msg": "session: problem setting token", "error": err})
+			} else {
+				// Save the token to the request context for use in views
+				ctx := r.Context()
+				ctx = context.WithValue(ctx, view.AuthenticityContext, token)
+				r = r.WithContext(ctx)
+			}
+
+		}
+
+		h(w, r)
+	}
+
+}
+
+```
 
 
 ### Paths and Security 
@@ -51,9 +113,51 @@ After you have parsed the params and authorised your request, you need to perfor
 ### Updating a record
 
 ```go 
+// HandleUpdate handles the POST of the form to update a user
+func HandleUpdate(w http.ResponseWriter, r *http.Request) error {
 
-// Update a record using form params
+	// Fetch the  params
+	params, err := mux.Params(r)
+	if err != nil {
+		return server.InternalError(err)
+	}
 
+	// Find the user
+	user, err := users.Find(params.GetInt(users.KeyName))
+	if err != nil {
+		return server.NotFoundError(err)
+	}
+
+	// Check the authenticity token
+	err = session.CheckAuthenticity(w, r)
+	if err != nil {
+		return err
+	}
+
+	// Authorise update user
+	err = can.Update(user, session.CurrentUser(w, r))
+	if err != nil {
+		return server.NotAuthorizedError(err)
+	}
+
+	// Set the password hash from the password
+	hash, err := auth.HashPassword(params.Get("password"))
+	if err != nil {
+		return server.InternalError(err)
+	}
+	params.SetString("password_hash", hash)
+
+	// Validate the params, removing any we don't accept
+	userParams := user.ValidateParams(params.Map(), users.AllowedParams())
+
+	err = user.Update(userParams)
+	if err != nil {
+		return server.InternalError(err)
+	}
+
+	// Redirect to user
+	return server.Redirect(w, r, user.ShowURL())
+}
 
 ```
 
@@ -63,10 +167,19 @@ You may find your handlers need to call out to another service, either synchrono
 
 
 ```go 
-
-// Get data from  another service syncrhonously
-
-
+// Get data from  another service synchronously (normally this would be async)
+  res, err := http.Get("http://www.google.com/robots.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+	body, err := ioutil.ReadAll(res.Body)
+	res.Body.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
+  // use body
+	fmt.Printf("%s", body)
+  
 ```
 
 
@@ -74,8 +187,24 @@ You may find your handlers need to call out to another service, either synchrono
 // Post data to another service asynchronously with the go keyword 
 go postData()
 
-```
+func postData() {
+  data := url.Values{}
+  data.Set("name", "foo")
+  data.Add("surname", "bar")
 
+  client := &http.Client{
+    Timeout: 10*time.Second
+  }
+  r, _ := http.NewRequest("POST", apiURL, bytes.NewBufferString(data.Encode()))
+  r.Header.Add("Authorization", APIAuthToken)
+  r.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+  r.Header.Add("Content-Length", strconv.Itoa(len(data.Encode())))
+
+  resp, _ := client.Do(r)
+  fmt.Println(resp.Status)
+}
+
+```
 
 ## Responding to Requests 
 

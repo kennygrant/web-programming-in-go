@@ -1,6 +1,8 @@
+![](/cover.jpg)
+
 # Web Programming in Go
 
-CAVEAT EMPTOR: This book is still in draft form and much content may change. Please submit an issue or pull request to the repo if you notice a mistake. 
+CAVEAT LECTOR: This book is still in draft form and much content may change. Please submit an issue or pull request to the repo if you notice a mistake. 
 
 This book will guide you through the process of building a complex web app with Go, similar to one you might build in other programming languages with Rails, Django or Flask. Readers coming from other languages or frameworks should not find it difficult to translate this knowledge to Go, but there is a dearth of examples of the details required to handle all the mundane activities of a web app - authentication, authorisation, templates, error handling, async operations etc.
 
